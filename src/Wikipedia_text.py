@@ -48,7 +48,9 @@ def get_article_id_from_category_tree(tree_dir: str,searching_id: int, name_outp
     os.makedirs(output_dir, exist_ok=True)
     with open(f"{output_dir}/{name_output}_{searching_id}.json", "w", encoding="UTF-8") as json_file:
         print(len(set_articles))
-        json.dump(list(set_articles), json_file, indent=2, ensure_ascii=True)
+        list_set = list(set_articles)
+        json.dump(list_set, json_file, indent=2, ensure_ascii=True)
+        json_file.close()
 
 
 visited_set = set()
