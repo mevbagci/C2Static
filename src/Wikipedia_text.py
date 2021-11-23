@@ -93,17 +93,18 @@ if __name__ == "__main__":
     print(f"Get all children from {search_id}")
     get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
     combine_id_text(f"{dir_output}/{name_output}_{search_id}.json", text_dir, dir_output_text)
-    exit()
-    for lang in ["de"]:
-        for speciality in ["Wirtschaft"]:
-            # define parameter
-            json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
-            wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
-            wiki_file_name = f"wikipedia_{lang}.v8.token"
-            dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
-
-            # Get all Words for language and specialitiy
-            spec_wiki_id = get_all_article_id(json_input_dir)
-
-            # Get all text for selected articles and write them
-            save_text_for_ids_and_combine(wiki_file_input_dir, wiki_file_name, dir_output, speciality, spec_wiki_id)
+    lang = "de"
+    # exit()
+    # for lang in ["de"]:
+    #     for speciality in ["Wirtschaft"]:
+    #         # define parameter
+    #         json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
+    #         wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
+    #         wiki_file_name = f"wikipedia_{lang}.v8.token"
+    #         dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
+    #
+    #         # Get all Words for language and specialitiy
+    #         spec_wiki_id = get_all_article_id(json_input_dir)
+    #
+    #         # Get all text for selected articles and write them
+    #         save_text_for_ids_and_combine(wiki_file_input_dir, wiki_file_name, dir_output, speciality, spec_wiki_id)
