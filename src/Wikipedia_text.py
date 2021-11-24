@@ -96,7 +96,7 @@ if __name__ == "__main__":
     text_dir = "/mnt/hydra/vol/public/baumartz/wikipedia.v8/wiki_archive/enwiki/enwiki.token"
     name_output = "enwiki_20201120"
     print(f"Get all children from {search_id}")
-    get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
+    # get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
     combine_id_text(f"{dir_output}/{name_output}_{search_id}.json", text_dir, dir_output_text, f"{search_id}")
     lang = "de"
     # exit()
