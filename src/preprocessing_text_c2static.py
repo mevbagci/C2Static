@@ -91,7 +91,7 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
             pool.join()
             with open(output_dir, "w", encoding="UTF-8") as output_write:
                 for i in result:
-                    output_write.write(result)
+                    output_write.write(i)
                 output_write.close()
         text_file.close()
 
