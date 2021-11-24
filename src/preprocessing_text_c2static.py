@@ -73,7 +73,7 @@ def spacy_txt_to_sentence(input_text: List[str], lang: str):
             for token in sentence:
                 text_temp.append(f"{token.lemma_}")
             text_output += f"{' '.join(text_temp)}\n"
-    return text_output
+    return [text_output]
 
 
 def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
