@@ -71,7 +71,7 @@ def spacy_txt_to_sentence(input_text: List[str], lang: str):
             for token in sentence:
                 text_temp.append(f"{token.lemma_}")
             text_output += f"{' '.join(text_temp)}\n"
-    return text_output
+    return [text_output]
 
 
 def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
@@ -85,8 +85,7 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
             pool.close()
             pool.join()
             with open(output_dir, "w", encoding="UTF-8") as output_write:
-                for i in result:
-                    output_write.write(i)
+                output_write.write(result)
                 output_write.close()
         text_file.close()
 
