@@ -131,7 +131,7 @@ def txt_to_paragraph(input_dir: str, input_name: str, lang: str, paragraph_len: 
 
 
 if __name__ == "__main__":
-    text_id = 25346631
+    text_id = 47397287
     for language in ["en"]:
         model_name = "spacy"
         # base_dir = f"/home/bagci/data/temp/"

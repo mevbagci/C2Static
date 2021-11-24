@@ -90,13 +90,13 @@ def combine_id_text(id_dir: str, text_to_id_dir: str, output_dir: str, outputnam
 
 if __name__ == "__main__":
     dir_tree = "/mnt/rawindra/vol/public/baumartz/text2wiki/data/wiki/en/enwiki-20201120/enwiki-20201120-category-tree-without-all.json"
-    search_id = 25346631
+    search_id = 47397287
     dir_output = "/mnt/hydra/vol/public/bagci/C2Static/enwiki/20201120/articles"
     dir_output_text = f"/mnt/hydra/vol/public/bagci/C2Static/enwiki/20201120/articles/text_{search_id}"
     text_dir = "/mnt/hydra/vol/public/baumartz/wikipedia.v8/wiki_archive/enwiki/enwiki.token"
     name_output = "enwiki_20201120"
     print(f"Get all children from {search_id}")
-    # get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
+    get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
     combine_id_text(f"{dir_output}/{name_output}_{search_id}.json", text_dir, dir_output_text, f"{search_id}")
     lang = "de"
     # exit()
