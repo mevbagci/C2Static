@@ -64,7 +64,7 @@ def spacy_txt_to_sentence(input_text: List[str], lang: str):
     nlp = spacy.load(switch["ef"][lang])
     all_stopwords = nlp.Defaults.stop_words
     text_output = ""
-    for article in tqdm.tqdm(input_text):
+    for article in input_text:
         article = article.replace("\n", "")
         nlp.max_length = len(article) + 100
         doc = nlp(article, disable=["ner", "morphologizer"])
