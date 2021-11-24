@@ -7,13 +7,59 @@ from multiprocessing import Pool
 from functools import partial
 
 
+switch = {
+        "ef":
+            {
+                "de": "de_core_news_sm",
+                "en": "en_core_web_sm",
+                "fr": "fr_core_news_sm",
+                "da": "da_core_news_sm",
+                "nl": "nl_core_news_sm",
+                "el": "el_core_news_sm",
+                "it": "it_core_news_sm",
+                "zh": "zh_core_web_sm",
+                "ja": "ja_core_web_sm",
+                "lt": "lt_core_web_sm",
+                "nb": "np_core_web_sm",
+                "pl": "pl_core_web_sm",
+                "pt": "pt_core_web_sm",
+                "ro": "ro_core_web_sm",
+                "ru": "ru_core_web_sm",
+                "es": "es_core_web_sm",
+                "multi": "xx_ent_wiki_sm",
+                "default": "xx_ent_wiki_sm",
+            },
+        "ac":
+            {
+                "zh": "zh_core_web_trf",
+                "da": "da_core_news_lg",
+                "nl": "nl_core_news_lg",
+                "en": "en_core_web_trf",
+                "fr": "fr_dep_news_trf",
+                "de": "de_dep_news_trf",
+                "el": "el_core_news_lg",
+                "it": "it_core_news_lg",
+                "ja": "ja_core_news_lg",
+                "lt": "lt_core_news_lg",
+                "nb": "nb_core_news_lg",
+                "pl": "pl_core_news_lg",
+                "pt": "pt_core_news_lg",
+                "ro": "ro_core_news_lg",
+                "ru": "ru_core_news_lg",
+                "es": "es_dep_news_trf",
+                "multi": "xx_sent_ud_sm",
+                "default": "xx_sent_ud_sm",
+            }
+    }
+
+
 def spacy_txt_to_sentence(input_text: List[str], lang: str):
     """
     Part the text into sentences and save them
     :param lang: language of the spacy Model
     :param input_text: List of text
     """
-    nlp = spacy.load(lang)
+    nlp = spacy.load(switch["ef"][lang])
     all_stopwords = nlp.Defaults.stop_words
     text_output = ""
     for article in input_text:
