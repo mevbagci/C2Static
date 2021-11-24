@@ -54,7 +54,7 @@ switch = {
             }
     }
 
-
+list_output_sen = []
 def spacy_txt_to_sentence(input_text: List[str], lang: str):
     """
     Part the text into sentences and save them
@@ -73,7 +73,8 @@ def spacy_txt_to_sentence(input_text: List[str], lang: str):
             for token in sentence:
                 text_temp.append(f"{token.lemma_}")
             text_output += f"{' '.join(text_temp)}\n"
-    return [text_output]
+    global list_output_sen
+    list_output_sen.append(text_output)
 
 
 def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
@@ -83,11 +84,12 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
             part_func = partial(spacy_txt_to_sentence, lang=lang)
             print(os.cpu_count())
             pool = Pool(os.cpu_count()-3)
-            result = pool.imap_unordered(part_func, text_lines)
+            result = list(tqdm.tqdm(pool.imap_unordered(part_func, text_lines), desc=f"Text to sentence with {model}"))
             pool.close()
             pool.join()
+            global list_output_sen
             with open(output_dir, "w", encoding="UTF-8") as output_write:
-                for i in result:
+                for i in list_output_sen:
                     output_write.write(i)
                 output_write.close()
         text_file.close()
