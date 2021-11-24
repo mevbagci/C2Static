@@ -83,7 +83,7 @@ def combine_id_text(id_dir: str, text_to_id_dir: str, output_dir: str, outputnam
                 text = info_article[len(info_article)-1].replace("\n", "")
                 text_output += f"{text}\n"
     with open(f"{output_dir}/{outputname}.txt", "w", encoding="UTF-8") as output_file:
-        output_file.write(text)
+        output_file.write(text_output)
     print(f"Number of saved articles {counter} from {len(id_list)}")
 
 
