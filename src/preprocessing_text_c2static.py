@@ -1,3 +1,5 @@
+import os
+
 import spacy
 import tqdm
 from os import makedirs
@@ -79,7 +81,7 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
         text_lines = text_file.readlines()
         if model == "spacy":
             part_func = partial(spacy_txt_to_sentence, lang=lang)
-            pool = Pool(6)
+            pool = Pool(os.cpu_count())
             result = list(tqdm.tqdm(pool.imap_unordered(part_func, text_lines),
                        desc=f"text_to_sentence with {model}"))
             pool.close()
