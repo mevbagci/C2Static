@@ -64,7 +64,7 @@ def spacy_txt_to_sentence(input_text: List[str], lang: str):
     nlp = spacy.load(switch["ef"][lang])
     all_stopwords = nlp.Defaults.stop_words
     text_output = ""
-    for article in input_text:
+    for article in tqdm.tqdm(input_text):
         article = article.replace("\n", "")
         nlp.max_length = len(article) + 100
         doc = nlp(article, disable=["ner", "morphologizer"])
@@ -81,13 +81,14 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
         text_lines = text_file.readlines()
         if model == "spacy":
             part_func = partial(spacy_txt_to_sentence, lang=lang)
-            pool = Pool(os.cpu_count())
-            result = str(tqdm.tqdm(pool.imap_unordered(part_func, text_lines),
-                       desc=f"text_to_sentence with {model}"))
+            print(os.cpu_count())
+            pool = Pool(os.cpu_count()-3)
+            result = pool.imap_unordered(part_func, text_lines)
             pool.close()
             pool.join()
             with open(output_dir, "w", encoding="UTF-8") as output_write:
-                output_write.write(result)
+                for i in result:
+                    output_write.write(i)
                 output_write.close()
         text_file.close()
 
