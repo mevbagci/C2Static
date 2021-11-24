@@ -86,11 +86,12 @@ def text_to_sentence(input_dir, lang, output_dir, model: str ="spacy"):
             part_func = partial(spacy_txt_to_sentence, lang=lang)
             print(os.cpu_count())
             pool = Pool(os.cpu_count()-3)
-            result = str(pool.imap_unordered(part_func, text_lines))
+            result = pool.map(part_func, text_lines)
             pool.close()
             pool.join()
             with open(output_dir, "w", encoding="UTF-8") as output_write:
-                output_write.write(result)
+                for i in result:
+                    output_write.write(result)
                 output_write.close()
         text_file.close()
 
