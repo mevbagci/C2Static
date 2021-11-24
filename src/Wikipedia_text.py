@@ -68,11 +68,12 @@ def get_children(tree: dict, parent_id: int):
                     get_children(tree, child_id)
 
 
-def combine_id_text(id_dir: str, text_to_id_dir: str, output_dir: str):
+def combine_id_text(id_dir: str, text_to_id_dir: str, output_dir: str, outputname: str):
     counter = 0
     os.makedirs(output_dir, exist_ok=True)
     with open(id_dir, "r", encoding="UTF-8") as json_file:
         id_list = json.load(json_file)
+    text_output = ""
     with open(text_to_id_dir, "r", encoding="UTF-8") as articles:
         for article in tqdm.tqdm(articles.readlines(), desc=f"Get all articles from {text_to_id_dir}"):
             info_article = article.split("\t")
@@ -80,9 +81,10 @@ def combine_id_text(id_dir: str, text_to_id_dir: str, output_dir: str):
             if a_id in id_list:
                 counter += 1
                 text = info_article[len(info_article)-1].replace("\n", "")
-                with open(f"{output_dir}/{a_id}.txt", "w", encoding="UTF-8") as output_file:
-                    output_file.write(text)
-    print(f"Number of saved articles {counter} from {len(id_dir)}")
+                text_output += f"{text}\n"
+    with open(f"{output_dir}/{outputname}.txt", "w", encoding="UTF-8") as output_file:
+        output_file.write(text)
+    print(f"Number of saved articles {counter} from {len(id_list)}")
 
 
 if __name__ == "__main__":
@@ -93,8 +95,8 @@ if __name__ == "__main__":
     text_dir = "/mnt/hydra/vol/public/baumartz/wikipedia.v8/wiki_archive/enwiki/enwiki.token"
     name_output = "enwiki_20201120"
     print(f"Get all children from {search_id}")
-    get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
-    combine_id_text(f"{dir_output}/{name_output}_{search_id}.json", text_dir, dir_output_text)
+    # get_article_id_from_category_tree(dir_tree, search_id, name_output, dir_output)
+    combine_id_text(f"{dir_output}/{name_output}_{search_id}.json", text_dir, dir_output_text, f"{search_id}")
     lang = "de"
     # exit()
     # for lang in ["de"]:
