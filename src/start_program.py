@@ -8,6 +8,18 @@ import learn_from_bert_ver2
 import learn_from_bert_ver2_paragraph
 from transformers import AutoTokenizer, BertTokenizer, BertModel
 
+set_files = set()
+
+
+def get_all_path_files(path_dir: str, end_file: str):
+    global set_files
+    for file in os.scandir(path_dir):
+        if file.is_dir():
+            get_all_path_files(file, end_file)
+        elif (str(file.path)).endswith(f"{end_file}"):
+            set_files.add(str(file.path))
+
+
 if __name__ == "__main__":
     switch = {
         "ef":
@@ -55,62 +67,68 @@ if __name__ == "__main__":
     }
     bert_models = {
         "de": "bert-base-german-cased",
-        "en": "bert-base-cased"
+        "en": "bert-base-uncased"
     }
-    for lang in ["de"]:
-        for speciality in ["Wirtschaft"]:
+    model_name = "bert-base-uncased"
+    for lang in ["en"]:
+        for speciality in ["Economy"]:
             # define parameter
-            json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
-            wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
-            wiki_file_name = f"wikipedia_{lang}.v8.token"
-            dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
-            spacy_model = switch["ef"][f"{lang}"]
-            tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-            min_count = 5
-            max_vocab_size = 2000000
-            num_epoch = 5
-            lr = 0.001
-            embeddings_size = 768
-            run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
+            # json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
+            # wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
+            # wiki_file_name = f"wikipedia_{lang}.v8.token"
+            # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
+            # spacy_model = switch["ef"][f"{lang}"]
+            in_dir = "/resources/corpora/Arxiv/sentence/Economy/2010"
+            get_all_path_files(in_dir, ".txt")
+            input_dirs = set_files
+            for input_dir in input_dirs:
+                vocab_name = input_dir.split("/")[-1].replace(".txt", "")
+                dir_out_year = input_dir.split("/")[-2]
+                dir_output = input_dir.replace(f"/sentence/{speciality}/{dir_out_year}/", f"/training/{speciality}/{dir_out_year}/training_{vocab_name}/")
 
-            # # Get all Words for language and specialitiy
-            # spec_wiki_id = Wikipedia_text.get_all_article_id(json_input_dir)
-            #
-            # # Get all text for selected articles and write them
-            # Wikipedia_text.save_text_for_ids_and_combine(wiki_file_input_dir, wiki_file_name, dir_output, speciality, spec_wiki_id)
-            #
-            # # Split in sentence
-            # preprocessing_text_c2static.txt_to_sentence(f"{dir_output}", f"{speciality}.txt", spacy_model)
-            #
-            # # Split in paragraphs
-            # preprocessing_text_c2static.txt_to_paragraph(f"{dir_output}", f"{speciality}.txt", spacy_model, 512, tokenizer)
-            #
-            # Convert into Dataset for static embeddings for sen
-            id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{dir_output}/sentences/{speciality}.txt", min_count, max_vocab_size)
+                min_count = 2
+                max_vocab_size = 2000000
+                num_epoch = 2
+                lr = 0.001
+                embeddings_size = 768
+                run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
-            if not os.path.isdir(f"{dir_output}/sentences/training_dataset/{run_name}/"):
-                os.makedirs(f"{dir_output}/sentences/training_dataset/{run_name}/", exist_ok=True)
+                # # Get all Words for language and specialitiy
+                # spec_wiki_id = Wikipedia_text.get_all_article_id(json_input_dir)
+                #
+                # # Get all text for selected articles and write them
+                # Wikipedia_text.save_text_for_ids_and_combine(wiki_file_input_dir, wiki_file_name, dir_output, speciality, spec_wiki_id)
+                #
+                # # Split in sentence
+                # preprocessing_text_c2static.txt_to_sentence(f"{dir_output}", f"{speciality}.txt", spacy_model)
+                #
+                # # Split in paragraphs
+                # preprocessing_text_c2static.txt_to_paragraph(f"{dir_output}", f"{speciality}.txt", spacy_model, 512, tokenizer)
+                #
+                # Convert into Dataset for static embeddings for sen
+                id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{input_dir}", min_count, max_vocab_size)
+                os.makedirs(os.path.dirname(dir_output), exist_ok=True)
 
-            # creating dataset and vocab
-            pickle.dump(id2word, open(f"{dir_output}/sentences/training_dataset/{run_name}/id2word.p", "wb"))
-            pickle.dump(id2counts, open(f"{dir_output}/sentences/training_dataset/{run_name}/id2counts.p", "wb"))
-            pickle.dump(word_counts, open(f"{dir_output}/sentences/training_dataset/{run_name}/word_counts.p", "wb"))
-            pickle.dump(word2id, open(f"{dir_output}/sentences/training_dataset/{run_name}/word2id.p", "wb"))
+                # creating dataset and vocab
+                pickle.dump(id2word, open(f"{os.path.dirname(dir_output)}/id2word.p", "wb"))
+                pickle.dump(id2counts, open(f"{os.path.dirname(dir_output)}/id2counts.p", "wb"))
+                pickle.dump(word_counts, open(f"{os.path.dirname(dir_output)}/word_counts.p", "wb"))
+                pickle.dump(word2id, open(f"{os.path.dirname(dir_output)}/word2id.p", "wb"))
 
-            lines, words_locs, num_words = make_vocab_dataset.construct_dataset(f"{dir_output}/sentences/{speciality}.txt", word2id)
+                lines, words_locs, num_words = make_vocab_dataset.construct_dataset(f"{input_dir}", word2id)
 
-            # Saving Dataset
-            with open(f"{dir_output}/sentences/training_dataset/{run_name}/dataset.p", "wb") as f:
-                pickle.dump([lines, words_locs, num_words], f)
+                # Saving Dataset
+                with open(f"{os.path.dirname(dir_output)}/dataset.p", "wb") as f:
+                    pickle.dump([lines, words_locs, num_words], f)
 
-            # BERT Model sentences
-            os.system(f"python learn_from_bert_ver2.py --gpu_id 0 --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
-                      f"{dir_output}/sentences/training_dataset/{run_name}/  --model_folder {dir_output}/sentences/model/{run_name}  "
-                      f"--num_negatives 10 --pretrained_bert_model {bert_models[lang]}")
+                # BERT Model sentences
+                os.system(f"python learn_from_bert_ver2.py --gpu_id 0 --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
+                          f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output)}  "
+                          f"--num_negatives 10 --pretrained_bert_model {bert_models[lang]}")
 
-            os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
-                      f"{dir_output}/paragraph/training_dataset/{run_name}/")
+                # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
+                #           f"{dir_output}/paragraph/training_dataset/{run_name}/")
 
-            os.system(f"python learn_from_bert_ver2_paragraph.py --gpu_id 0 --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
-                      f"{dir_output}/paragraph/training_dataset/{run_name}/  --model_folder {dir_output}/paragraph/model/{run_name}  "
-                      f"--num_negatives 10 --pretrained_bert_model {bert_models[lang]}")
+                # os.system(f"python learn_from_bert_ver2_paragraph.py --gpu_id 0 --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
+                #           f"{dir_output}/paragraph/training_dataset/{run_name}/  --model_folder {dir_output}/paragraph/model/{run_name}  "
+                #           f"--num_negatives 10 --pretrained_bert_model {bert_models[lang]}")
