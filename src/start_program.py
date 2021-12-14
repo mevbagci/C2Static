@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
             min_count = 5
             max_vocab_size = 20000000
-            num_epoch = 1
+            num_epoch = 5
             lr = 0.001
             embeddings_size = 768
             run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
