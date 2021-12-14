@@ -97,6 +97,7 @@ if __name__ == "__main__":
                 batch_size = 128
                 max_len = 512
                 loss_print = 500
+                algo = "Adam"
                 embeddings_size = 768
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
                 dir_output = input_dir.replace(f"/sentence/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/lr_{lr}/training_{vocab_name}/")
@@ -132,7 +133,7 @@ if __name__ == "__main__":
 
                 devive_number = 0
                 # BERT Model sentences
-                os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SGD --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
+                os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo {algo} --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
                           f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output)}  --batch_size {batch_size} --MAX_LEN {max_len} "
                           f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print} --lr_update {lr_update}")
 
