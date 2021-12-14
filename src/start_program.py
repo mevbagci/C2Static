@@ -85,9 +85,9 @@ if __name__ == "__main__":
             vocab_name = input_dir.split("/")[-1].replace(".txt", "")
             dir_output = input_dir.replace(f"/sentence/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/training_{vocab_name}/")
 
-            min_count = 2
-            max_vocab_size = 2000000
-            num_epoch = 2
+            min_count = 5
+            max_vocab_size = 20000000
+            num_epoch = 1
             lr = 0.001
             embeddings_size = 768
             run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             with open(f"{os.path.dirname(dir_output)}/dataset.p", "wb") as f:
                 pickle.dump([lines, words_locs, num_words], f)
 
-            devive_number = 0
+            devive_number = 1
             os.environ["CUDA_VISIBLE_DEVICES"] = f"{devive_number}"
             # BERT Model sentences
             os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
