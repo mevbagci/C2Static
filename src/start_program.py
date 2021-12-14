@@ -69,8 +69,13 @@ if __name__ == "__main__":
         "de": "bert-base-german-cased",
         "en": "bert-base-uncased"
     }
-    model_name = "bert-base-uncased"
-    for lang in ["en"]:
+    # , "allenai/scibert_scivocab_uncased", "albert-base-v2"
+    model_names = ["bert-base-uncased"]
+    data_field_names = {
+        "Economy": ["Economy_all_sentences.txt", "Economy_Quantitative-Finance_all_sentences.txt"],
+        "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
+    }
+    for model_name in model_names:
         for speciality in ["Economy"]:
             # define parameter
             # json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
@@ -79,22 +84,22 @@ if __name__ == "__main__":
             # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
             # spacy_model = switch["ef"][f"{lang}"]
             base_dir = "/resources/corpora/Arxiv/sentence"
-            data_names = ["Economy_all_sentences.txt", "Economy_Quantitative-Finance_all_sentences.txt"]
+            data_names = data_field_names[speciality]
             for data_name in data_names:
                 input_dir = f"{base_dir}/sum/{data_name}"
                 # get_all_path_files(in_dir, ".txt")
                 # input_dirs = set_files
-                vocab_name = input_dir.split("/")[-1].replace(".txt", "")
-                dir_output = input_dir.replace(f"/sentence/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/training_{vocab_name}/")
-
                 min_count = 5
                 max_vocab_size = 20000000
                 num_epoch = 5
-                lr = 0.001
+                lr = 0.1
+                lr_update = 100
                 batch_size = 128
                 max_len = 512
-                loss_print = 1000
+                loss_print = 500
                 embeddings_size = 768
+                vocab_name = input_dir.split("/")[-1].replace(".txt", "")
+                dir_output = input_dir.replace(f"/sentence/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/lr_{lr}/training_{vocab_name}/")
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
                 # # Get all Words for language and specialitiy
@@ -129,7 +134,7 @@ if __name__ == "__main__":
                 # BERT Model sentences
                 os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
                           f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output)}  --batch_size {batch_size} --MAX_LEN {max_len} "
-                          f"--num_negatives 10 --pretrained_bert_model {bert_models[lang]} --print_loss_every {loss_print}")
+                          f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print} --lr_update {lr_update}")
 
                 # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
                 #           f"{dir_output}/paragraph/training_dataset/{run_name}/")
