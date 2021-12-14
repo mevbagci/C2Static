@@ -120,8 +120,7 @@ if __name__ == "__main__":
             with open(f"{os.path.dirname(dir_output)}/dataset.p", "wb") as f:
                 pickle.dump([lines, words_locs, num_words], f)
 
-            devive_number = 1
-            os.environ["CUDA_VISIBLE_DEVICES"] = f"{devive_number}"
+            devive_number = 0
             # BERT Model sentences
             os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
                       f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output)}  "
