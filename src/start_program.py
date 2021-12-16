@@ -96,7 +96,7 @@ if __name__ == "__main__":
                 # input_dirs = set_files
                 min_count = 5
                 max_vocab_size = 20000000
-                num_epoch = 2
+                num_epoch = 1
                 lr = 0.001
                 lr_update = 0.99
                 batch_size = 128
