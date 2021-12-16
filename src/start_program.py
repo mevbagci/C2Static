@@ -75,6 +75,10 @@ if __name__ == "__main__":
         "Economy": ["Economy_all_sentences.txt", "Economy_Quantitative-Finance_all_sentences.txt"],
         "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
     }
+    data_field_names_adapt = {
+        "Economy": ["Economy_Quantitative-Finance_all_sentences_bigger_5_words.txt", "Economy_Quantitative-Finance_all_sentences_longer_140_chars.txt"],
+        "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
+    }
     for model_name in model_names:
         for speciality in ["Economy"]:
             # define parameter
@@ -86,20 +90,22 @@ if __name__ == "__main__":
             base_dir = "/resources/corpora/Arxiv/sentence"
             data_names = data_field_names[speciality]
             for data_name in data_names:
-                input_dir = f"{base_dir}/sum/{data_name}"
+                fol_name = f"adapt"
+                input_dir = f"{base_dir}/{fol_name}/{data_name}"
                 # get_all_path_files(in_dir, ".txt")
                 # input_dirs = set_files
                 min_count = 5
                 max_vocab_size = 20000000
-                num_epoch = 5
-                lr = 0.1
-                lr_update = 100
+                num_epoch = 2
+                lr = 0.001
+                lr_update = 0.99
                 batch_size = 128
                 max_len = 512
                 loss_print = 500
                 embeddings_size = 768
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
-                dir_output = input_dir.replace(f"/sentence/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/lr_{lr}/training_{vocab_name}/")
+                dir_output_model = input_dir.replace(f"/sentence/{fol_name}/", f"/training/{speciality}/{model_name.replace('/','_')}/lr_{lr}_update_{lr_update}_maxlen_{max_len}_epoch_{num_epoch}/training_{vocab_name}/")
+                dir_output = input_dir.replace(f"/sentence/{fol_name}/", f"/training/{speciality}/min_count_{min_count}/training_{vocab_name}/")
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
                 # # Get all Words for language and specialitiy
@@ -117,6 +123,7 @@ if __name__ == "__main__":
                 # Convert into Dataset for static embeddings for sen
                 id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{input_dir}", min_count, max_vocab_size)
                 os.makedirs(os.path.dirname(dir_output), exist_ok=True)
+                os.makedirs(os.path.dirname(dir_output_model), exist_ok=True)
 
                 # creating dataset and vocab
                 pickle.dump(id2word, open(f"{os.path.dirname(dir_output)}/id2word.p", "wb"))
@@ -130,10 +137,10 @@ if __name__ == "__main__":
                 with open(f"{os.path.dirname(dir_output)}/dataset.p", "wb") as f:
                     pickle.dump([lines, words_locs, num_words], f)
 
-                devive_number = 1
+                devive_number = 0
                 # BERT Model sentences
                 os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
-                          f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output)}  --batch_size {batch_size} --MAX_LEN {max_len} "
+                          f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output_model)}  --batch_size {batch_size} --MAX_LEN {max_len} "
                           f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print} --lr_update {lr_update}")
 
                 # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
