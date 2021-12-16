@@ -88,7 +88,7 @@ if __name__ == "__main__":
             # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
             # spacy_model = switch["ef"][f"{lang}"]
             base_dir = "/resources/corpora/Arxiv/sentence"
-            data_names = data_field_names[speciality]
+            data_names = data_field_names_adapt[speciality]
             for data_name in data_names:
                 fol_name = f"adapt"
                 input_dir = f"{base_dir}/{fol_name}/{data_name}"
