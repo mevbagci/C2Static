@@ -87,7 +87,7 @@ if __name__ == "__main__":
             # wiki_file_name = f"wikipedia_{lang}.v8.token"
             # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
             # spacy_model = switch["ef"][f"{lang}"]
-            base_dir = "/resources/corpora/Arxiv/sum"
+            base_dir = "/mnt/rawindra/vol/public/bagci/Arxiv/sum"
             data_names = data_field_names[speciality]
             for data_name in data_names:
                 input_dir = f"{base_dir}/{data_name}"
