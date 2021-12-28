@@ -72,40 +72,37 @@ if __name__ == "__main__":
     # , "allenai/scibert_scivocab_uncased", "albert-base-v2"
     model_names = ["bert-base-uncased"]
     data_field_names = {
-        "Economy": ["Economy_all_sentences.txt", "Economy_Quantitative-Finance_all_sentences.txt"],
-        "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
+        "Economy": ["Economy_Quantitative-Finance_all_sentences.txt"],
+        "Computer-Science": ["Computer-Science_all_sentences.txt"]
     }
     data_field_names_adapt = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences_bigger_5_words.txt", "Economy_Quantitative-Finance_all_sentences_longer_140_chars.txt"],
         "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
     }
     for model_name in model_names:
-        for speciality in ["Economy"]:
+        for speciality in ["Economy", "Computer-Science"]:
             # define parameter
             # json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
             # wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
             # wiki_file_name = f"wikipedia_{lang}.v8.token"
             # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
             # spacy_model = switch["ef"][f"{lang}"]
-            base_dir = "/resources/corpora/Arxiv/sentence"
-            data_names = data_field_names_adapt[speciality]
+            base_dir = "/resources/corpora/Arxiv/sum"
+            data_names = data_field_names[speciality]
             for data_name in data_names:
-                fol_name = f"adapt"
-                input_dir = f"{base_dir}/{fol_name}/{data_name}"
+                input_dir = f"{base_dir}/{data_name}"
                 # get_all_path_files(in_dir, ".txt")
                 # input_dirs = set_files
                 min_count = 5
                 max_vocab_size = 20000000
                 num_epoch = 1
-                lr = 0.001
-                lr_update = 0.99
                 batch_size = 128
                 max_len = 512
                 loss_print = 500
                 embeddings_size = 768
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
-                dir_output_model = input_dir.replace(f"/sentence/{fol_name}/", f"/training/{speciality}/{model_name.replace('/','_')}/lr_{lr}_update_{lr_update}_maxlen_{max_len}_epoch_{num_epoch}/training_{vocab_name}/")
-                dir_output = input_dir.replace(f"/sentence/{fol_name}/", f"/training/{speciality}/min_count_{min_count}/training_{vocab_name}/")
+                dir_output_model = input_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/maxlen_{max_len}_epoch_{num_epoch}/training_{vocab_name}/")
+                dir_output = input_dir.replace(f"/sum/", f"/training/{speciality}/dataset/training_{vocab_name}/")
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
                 # # Get all Words for language and specialitiy
@@ -139,9 +136,9 @@ if __name__ == "__main__":
 
                 devive_number = 1
                 # BERT Model sentences
-                os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --lr {lr} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
+                os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
                           f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output_model)}  --batch_size {batch_size} --MAX_LEN {max_len} "
-                          f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print} --lr_update {lr_update}")
+                          f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print}")
 
                 # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
                 #           f"{dir_output}/paragraph/training_dataset/{run_name}/")
