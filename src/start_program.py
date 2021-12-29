@@ -70,7 +70,7 @@ if __name__ == "__main__":
         "en": "bert-base-uncased"
     }
     # , "allenai/scibert_scivocab_uncased", "albert-base-v2"
-    model_names = ["bert-base-uncased"]
+    model_names = ["allenai/scibert_scivocab_uncased", "albert-base-v2"]
     data_field_names = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences.txt"],
         "Computer-Science": ["Computer-Science_all_sentences.txt"]
