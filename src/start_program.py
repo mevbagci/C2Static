@@ -122,27 +122,27 @@ if __name__ == "__main__":
                 # preprocessing_text_c2static.txt_to_paragraph(f"{dir_output}", f"{speciality}.txt", spacy_model, 512, tokenizer)
                 #
                 # Convert into Dataset for static embeddings for sen
-                id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{input_dir}", min_count, max_vocab_size)
-                os.makedirs(dir_output, exist_ok=True)
-                os.makedirs(dir_output_model, exist_ok=True)
-
-                # creating dataset and vocab
-                pickle.dump(id2word, open(f"{dir_output}/id2word.p", "wb"))
-                pickle.dump(id2counts, open(f"{dir_output}/id2counts.p", "wb"))
-                pickle.dump(word_counts, open(f"{dir_output}/word_counts.p", "wb"))
-                pickle.dump(word2id, open(f"{dir_output}/word2id.p", "wb"))
-
-                lines, words_locs, num_words = make_vocab_dataset.construct_dataset(f"{input_dir}", word2id)
+                # id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{input_dir}", min_count, max_vocab_size)
+                # os.makedirs(dir_output, exist_ok=True)
+                # os.makedirs(dir_output_model, exist_ok=True)
+                #
+                # # creating dataset and vocab
+                # pickle.dump(id2word, open(f"{dir_output}/id2word.p", "wb"))
+                # pickle.dump(id2counts, open(f"{dir_output}/id2counts.p", "wb"))
+                # pickle.dump(word_counts, open(f"{dir_output}/word_counts.p", "wb"))
+                # pickle.dump(word2id, open(f"{dir_output}/word2id.p", "wb"))
+                #
+                # lines, words_locs, num_words = make_vocab_dataset.construct_dataset(f"{input_dir}", word2id)
 
                 # Saving Dataset
-                with open(f"{dir_output}/dataset.p", "wb") as f:
-                    pickle.dump([lines, words_locs, num_words], f)
+                # with open(f"{dir_output}/dataset.p", "wb") as f:
+                #     pickle.dump([lines, words_locs, num_words], f)
 
                 devive_number = 0
                 # BERT Model sentences
-                # os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
-                #           f"{dir_output}  --model_folder {dir_output_model}  --batch_size {batch_size} --MAX_LEN {max_len} "
-                #           f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print}")
+                os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
+                          f"{dir_output}  --model_folder {dir_output_model}  --batch_size {batch_size} --MAX_LEN {max_len} "
+                          f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print}")
 
                 # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
                 #           f"{dir_output}/paragraph/training_dataset/{run_name}/")
