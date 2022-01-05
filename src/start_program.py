@@ -106,6 +106,7 @@ if __name__ == "__main__":
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
                 dir_output_model = out_base_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}")
                 dir_output = out_base_dir.replace(f"/sum/", f"/training/{speciality}/dataset/training_{vocab_name}")
+                print(dir_output)
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
                 # # Get all Words for language and specialitiy
