@@ -74,7 +74,7 @@ if __name__ == "__main__":
     data_field_names = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences.txt"],
         "Computer-Science": ["Computer-Science_all_sentences.txt"],
-        "Wikipedia": ["wiki_per_sentence/wikipedia_all_per_sentences.txt"]
+        "Wikipedia": ["wiki_per_sentence/wikipedia_all_per_sentences_9.txt"]
     }
     data_field_names_adapt = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences_bigger_5_words.txt", "Economy_Quantitative-Finance_all_sentences_longer_140_chars.txt"],
@@ -90,6 +90,7 @@ if __name__ == "__main__":
             # dir_output = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/wiki_text"
             # spacy_model = switch["ef"][f"{lang}"]
             base_dir = "/mnt/rawindra/vol/public/bagci/Arxiv/sum"
+            out_base_dir = "/mnt/corpora2/projects/bagci/Arxiv/sum"
             data_names = data_field_names[speciality]
             for data_name in data_names:
                 input_dir = f"{base_dir}/{data_name}"
@@ -103,8 +104,8 @@ if __name__ == "__main__":
                 loss_print = 500
                 embeddings_size = 768
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
-                dir_output_model = input_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/")
-                dir_output = input_dir.replace(f"/sum/", f"/training/{speciality}/dataset/training_{vocab_name}/")
+                dir_output_model = out_base_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}")
+                dir_output = out_base_dir.replace(f"/sum/", f"/training/{speciality}/dataset/training_{vocab_name}")
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
                 # # Get all Words for language and specialitiy
@@ -121,25 +122,25 @@ if __name__ == "__main__":
                 #
                 # Convert into Dataset for static embeddings for sen
                 id2word, word2id, id2counts, word_counts = make_vocab_dataset.construct_vocab(f"{input_dir}", min_count, max_vocab_size)
-                os.makedirs(os.path.dirname(dir_output), exist_ok=True)
-                os.makedirs(os.path.dirname(dir_output_model), exist_ok=True)
+                os.makedirs(dir_output, exist_ok=True)
+                os.makedirs(dir_output_model, exist_ok=True)
 
                 # creating dataset and vocab
-                pickle.dump(id2word, open(f"{os.path.dirname(dir_output)}/id2word.p", "wb"))
-                pickle.dump(id2counts, open(f"{os.path.dirname(dir_output)}/id2counts.p", "wb"))
-                pickle.dump(word_counts, open(f"{os.path.dirname(dir_output)}/word_counts.p", "wb"))
-                pickle.dump(word2id, open(f"{os.path.dirname(dir_output)}/word2id.p", "wb"))
+                pickle.dump(id2word, open(f"{dir_output}/id2word.p", "wb"))
+                pickle.dump(id2counts, open(f"{dir_output}/id2counts.p", "wb"))
+                pickle.dump(word_counts, open(f"{dir_output}/word_counts.p", "wb"))
+                pickle.dump(word2id, open(f"{dir_output}/word2id.p", "wb"))
 
                 lines, words_locs, num_words = make_vocab_dataset.construct_dataset(f"{input_dir}", word2id)
 
                 # Saving Dataset
-                with open(f"{os.path.dirname(dir_output)}/dataset.p", "wb") as f:
+                with open(f"{dir_output}/dataset.p", "wb") as f:
                     pickle.dump([lines, words_locs, num_words], f)
 
                 devive_number = 0
                 # BERT Model sentences
                 os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
-                          f"{os.path.dirname(dir_output)}  --model_folder {os.path.dirname(dir_output_model)}  --batch_size {batch_size} --MAX_LEN {max_len} "
+                          f"{dir_output}  --model_folder {dir_output_model}  --batch_size {batch_size} --MAX_LEN {max_len} "
                           f"--num_negatives 10 --pretrained_bert_model {model_name} --print_loss_every {loss_print}")
 
                 # os.system(f"python make_vocab_dataset.py --dataset_location {dir_output}/paragraph/{speciality}.txt --min_count {min_count} --max_vocab_size {max_vocab_size} --location_save_vocab_dataset "
