@@ -95,8 +95,8 @@ if __name__ == "__main__":
                 input_dir = f"{base_dir}/{data_name}"
                 # get_all_path_files(in_dir, ".txt")
                 # input_dirs = set_files
-                min_count = 5
-                max_vocab_size = 20000000
+                min_count = 10
+                max_vocab_size = 750000
                 num_epoch = 1
                 batch_size = 128
                 max_len = 512
