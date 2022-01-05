@@ -70,17 +70,19 @@ if __name__ == "__main__":
         "en": "bert-base-uncased"
     }
     # , "allenai/scibert_scivocab_uncased", "albert-base-v2"
-    model_names = ["allenai/scibert_scivocab_uncased", "albert-base-v2"]
+    model_names = ["bert-base-uncased"]
     data_field_names = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences.txt"],
-        "Computer-Science": ["Computer-Science_all_sentences.txt"]
+        "Computer-Science": ["Computer-Science_all_sentences.txt"],
+        "Wikipedia": ["wiki_per_sentence/wikipedia_all_per_sentences.txt"]
     }
     data_field_names_adapt = {
         "Economy": ["Economy_Quantitative-Finance_all_sentences_bigger_5_words.txt", "Economy_Quantitative-Finance_all_sentences_longer_140_chars.txt"],
-        "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"]
+        "Quantitative-Biology": ["Quantitative-Biology_all_sentences.txt"],
+        "Wikipedia": ["wiki_per_sentence/wikipedia_all_per_sentences.txt"]
     }
     for model_name in model_names:
-        for speciality in ["Economy", "Computer-Science"]:
+        for speciality in ["Wikipedia"]:
             # define parameter
             # json_input_dir = f"/home/bagci/data/Wikipedia/Fachbuecher/{lang}/{speciality}/map_to_wiki/{lang}_economy_combined_register.json"
             # wiki_file_input_dir = f"/home/bagci/data/Wikipedia/dewiki"
@@ -101,7 +103,7 @@ if __name__ == "__main__":
                 loss_print = 500
                 embeddings_size = 768
                 vocab_name = input_dir.split("/")[-1].replace(".txt", "")
-                dir_output_model = input_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/maxlen_{max_len}_epoch_{num_epoch}/training_{vocab_name}/")
+                dir_output_model = input_dir.replace(f"/sum/", f"/training/{speciality}/{model_name.replace('/','_')}/")
                 dir_output = input_dir.replace(f"/sum/", f"/training/{speciality}/dataset/training_{vocab_name}/")
                 run_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
 
