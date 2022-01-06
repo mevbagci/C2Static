@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 min_count = 10
                 max_vocab_size = 750000
                 num_epoch = 1
-                batch_size = 16
+                batch_size = 256
                 max_len = 512
                 loss_print = 500
                 embeddings_size = 768
