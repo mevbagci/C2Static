@@ -138,7 +138,7 @@ if __name__ == "__main__":
                 # with open(f"{dir_output}/dataset.p", "wb") as f:
                 #     pickle.dump([lines, words_locs, num_words], f)
 
-                devive_number = 0
+                devive_number = 1
                 # BERT Model sentences
                 os.system(f"python learn_from_bert_ver2.py --gpu_id {devive_number} --num_epochs {num_epoch} --algo SparseAdam --t 5e-6 --word_emb_size {embeddings_size} --location_dataset  "
                           f"{dir_output}  --model_folder {dir_output_model}  --batch_size {batch_size} --MAX_LEN {max_len} "
